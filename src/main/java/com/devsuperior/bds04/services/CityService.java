@@ -4,6 +4,9 @@ import com.devsuperior.bds04.dto.CityDTO;
 import com.devsuperior.bds04.entities.City;
 import com.devsuperior.bds04.repositories.CityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,10 +18,20 @@ public class CityService {
     @Autowired
     private CityRepository repository;
 
-    public List<CityDTO> findAll() {
+    public List<CityDTO> findAllSorted() {
 
-        List<City> result = repository.findAll();
+        List<City> result = repository.findAll(Sort.by("name"));
 
-        return result.stream().map( x-> new CityDTO(x)).collect(Collectors.toList());
+        return result.stream().map(x -> new CityDTO(x)).collect(Collectors.toList());
+    }
+
+    public CityDTO insert(CityDTO dto) {
+
+        City entity = new City();
+        entity.setName(dto.getName());
+
+        entity = repository.save(entity);
+
+        return new CityDTO(entity);
     }
 }
